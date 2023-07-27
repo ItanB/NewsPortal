@@ -1,0 +1,28 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+{% block title %}
+Новости
+{% endblock title %}
+
+{% block content %}
+   <h1>{{ new.title|censor }}</h1>
+
+   <hr>
+ {% if post %}
+       <table>
+           <tr>
+               <td>Статья</td>
+               <td>Дата публикации</td>
+               <td>Текст статьи</td>
+           </tr>
+
+           <tr>
+               <td>{{ post.title|censor }}</td>
+               <td>{{ post.post_time|date:'d M Y' }}</td>
+               <td>{{ post.text|censor }}</td>
+           </tr>
+       </table>
+{% else %}
+       <h2>Такой статьи нет!</h2>
+{% endif %}
+{% endblock content %}

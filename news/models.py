@@ -3,11 +3,16 @@ from django.contrib.auth.models import User
 import django.utils.timezone
 from django.db.models import Sum
 from django.db.models.functions import Coalesce
+from typing import List, Tuple
+from django.core.validators import MinValueValidator
 
 
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.user.title()
 
     def update_rating(self):
         author_posts_rating = Post.objects.filter(post_author_id=self.pk).aggregate(
@@ -23,6 +28,9 @@ class Author(models.Model):
 
 class Category(models.Model):
     category = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.category.title()
 
 
 class Post(models.Model):
@@ -41,6 +49,9 @@ class Post(models.Model):
     title = models.CharField(max_length=255, null=False)
     text = models.TextField()
     rating = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f'{self.title.title()}: {self.text[:20]}'
 
     def like(self):
         self.rating += 1
@@ -66,6 +77,9 @@ class Comment(models.Model):
     text = models.TextField()
     date = models.DateTimeField(default=django.utils.timezone.now)
     rating = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f'{self.user.title()}: {self.text[:20]}'
 
     def like(self):
         self.rating += 1

@@ -1,0 +1,28 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+{% block content %}
+   <h1>Новости</h1>
+    <h2> Количество статей:</h2>
+   <h3>{{ posts|length }}</h3>
+   <hr>
+   {% if posts %}
+       <table>
+           <tr>
+               <td>Название статьи</td>
+               <td>Дата публикации</td>
+               <td>Описание</td>
+           </tr>
+
+           {% for posts in posts %}
+           <tr>
+               <td>{{ posts.title|censor }}</td>
+               <td>{{ posts.post_time|date:'d M Y' }}</td>
+               <td>{{ posts.text|truncatechars:20|censor }}</td>
+           </tr>
+           {% endfor %}
+
+       </table>
+   {% else %}
+       <h2>Статей нет!</h2>
+   {% endif %}
+{% endblock content %}
