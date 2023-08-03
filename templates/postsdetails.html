@@ -25,4 +25,6 @@
 {% else %}
        <h2>Такой статьи нет!</h2>
 {% endif %}
+<a href='{% url "news_update" post.pk %}'>Edit</a>
+<a href='{% url "news_delete" post.pk %}'>Delete</a>
 {% endblock content %}
