@@ -5,7 +5,17 @@ from django.db.models import Sum
 from django.db.models.functions import Coalesce
 from typing import List, Tuple
 from django.core.validators import MinValueValidator
+from allauth.account.forms import SignupForm
+from django.contrib.auth.models import Group
 
+
+class BasicSignupForm(SignupForm):
+
+    def save(self, request):
+        user = super(BasicSignupForm, self).save(request)
+        basic_group = Group.objects.get(name='basic')
+        basic_group.user_set.add(user)
+        return user
 
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -86,3 +96,7 @@ class Comment(models.Model):
 
     def dislike(self):
         self.rating -= 1
+
+
+class Protected(models.Model):
+    pass
