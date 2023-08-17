@@ -4,19 +4,21 @@
 {% if is_not_author %}
 <button><a href="{% url 'upgrade/' %}">Стать автором</a></button>
 {% endif %}
+{% if is_not_subscriber %}
+<p class="text-center"><a href="{% url 'subscribe' category.id %}" class="btn btn-secondary btn-sm">Подписаться</a></p>
     <h2> Количество статей:</h2>
    <h3>{{ posts|length }}</h3>
    <hr>
-   {% if posts %}
+   {% if category_news_list %}
        <table>
            <tr>
                <td>Название статьи</td>
+               <td>Категории</td>
                <td>Дата публикации</td>
                <td>Описание</td>
-               <td>Категория</td>
            </tr>
 
-           {% for posts in posts %}
+           {% for posts in category_news_list %}
            <tr>
                <td>{{ posts.title|censor }}</td>
                <td>{{ posts.post_time|date:'d M Y' }}</td>
@@ -55,5 +57,5 @@
            <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
        {% endif %}
    {% endif %}
-
+{% endif %}
 {% endblock content %}

@@ -1,7 +1,7 @@
 from allauth.account.views import LogoutView
 from django.contrib.auth.decorators import login_required
 from django.urls import path
-from .views import upgrade_me
+from .views import upgrade_me, CategoryListView, subscribe
 from news.views import PostsList, PostsDetail, SearchPostList, PostCreate, PostUpdate, PostDelete, ArticleCreate, \
     ArticleUpdate, ArticleDelete, LoginRequired, Logout
 
@@ -17,7 +17,8 @@ urlpatterns = [
     path('article/<int:pk>/delete', ArticleDelete.as_view(), name='article_delete'),
     path('news/login', LoginRequired.as_view(), name='login'),
     path('news/logout', LogoutView.as_view(), name='logout'),
-    path('upgrade/', upgrade_me, name='upgrade')
-    # path('signup/', BaseRegisterView.as_view(template_name='sign/signup.html'), name='signup'),
+    path('upgrade/', upgrade_me, name='upgrade'),
+    path('categories/<int:pk>', CategoryListView.as_view(), name='category_list'),
+    path('categories/<int:pk>/subscribe', subscribe, name='subscribe'),
 
 ]

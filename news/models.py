@@ -17,6 +17,7 @@ class BasicSignupForm(SignupForm):
         basic_group.user_set.add(user)
         return user
 
+
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)
@@ -37,10 +38,12 @@ class Author(models.Model):
 
 
 class Category(models.Model):
+    objects = None
     category = models.CharField(max_length=100, unique=True)
+    subscribers = models.ManyToManyField(User, blank=True, related_name='categories')
 
     def __str__(self):
-        return self.category.title()
+        return self.category
 
 
 class Post(models.Model):
