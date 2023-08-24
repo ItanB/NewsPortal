@@ -59,7 +59,6 @@ def send_weekly_mail():
                     'posts': post_list,
                 }
             )
-            # отправка письма
             msg = EmailMultiAlternatives(
                 subject=f'Категория - {cat.name}',
                 body='',
