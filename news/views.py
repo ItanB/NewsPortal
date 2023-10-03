@@ -12,6 +12,10 @@ from .forms import PostForm
 from .models import Post, Category
 from .filters import PostFilter
 
+import logging
+
+logger = logging.getLogger('main')
+
 
 @login_required
 def upgrade_me(request):
@@ -29,6 +33,8 @@ class PostsList(ListView):
     context_object_name = 'posts'
     paginate_by = 10
 
+    logger.info('Страница постов загружена!')
+
 
 class PostsDetail(DetailView):
     model = Post
@@ -41,6 +47,8 @@ class SearchPostList(ListView):
     ordering = '-id'
     template_name = 'news_search.html'
     context_object_name = 'news_search'
+
+    logger.info('Страница поиска постов загружена!')
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -60,6 +68,8 @@ class PostCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'news.add_post'
     success_url = reverse_lazy('news_search')
 
+    logger.info('Страница создание постов загружена!')
+
 
 class PostUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     form_class = PostForm
@@ -67,6 +77,8 @@ class PostUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'news_create.html'
     permission_required = 'news.change_post'
     success_url = reverse_lazy('news_search')
+
+    logger.info('Страница обновление постов загружена!')
 
 
 class LoginRequired(TemplateView):
@@ -96,6 +108,8 @@ class ArticleCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'news.add_post'
     success_url = reverse_lazy('news_search')
 
+    logger.info('Страница создание статьи загружена!')
+
     def form_valid(self, form):
         post = form.save(commit=False)
         post.type = 'AR'
@@ -109,6 +123,8 @@ class ArticleUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'news.change_post'
     success_url = reverse_lazy('news_search')
 
+    logger.info('Страница обновление статьи загружена!')
+
 
 class ArticleDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Post
@@ -121,6 +137,8 @@ class CategoryListView(PostsList):
     model = Post
     template_name = 'news/category_list.html'
     context_object_name = 'category_news_list'
+
+    logger.info('Страница категории загружена!')
 
     def get_queryset(self):
         queryset = Post.objects.filter(category=self.category).order_by('-created_at')

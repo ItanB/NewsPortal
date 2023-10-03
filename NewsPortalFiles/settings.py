@@ -66,6 +66,112 @@ MIDDLEWARE = [
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
 
+#настройка логгирования
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'style': '}',
+
+#создаем шаблон вывода информации
+    'formatters': {
+        'form_simple': {
+            'format': '%(asctime)s - %(levelname)s - %(message)s',
+        },
+        'form_general': {
+            'format': '%(asctime)s - %(levelname)s - %(module)s - %(message)s',
+        },
+        'form_errors': {
+            'format': '%(asctime)s - %(levelname)s - %(message)s - %(pathname)s - %(exc_info)s',
+        },
+        'form_security': {
+            'format': '%(asctime)s - %(levelname)s - %(module)s - %(message)s',
+        },
+        'form_email': {
+            'format': '%(asctime)s - %(levelname)s - %(message)s - %(pathname)s',
+        },
+    },
+
+#фильтры для форматирования
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+    },
+
+#главный словарь, как и где будет выводиться информация
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'form_simple'
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler',
+            'formatter': 'form_email',
+        },
+        'for_general': {
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'formatter': 'form_general',
+            'class': 'logging.FileHandler',
+            'filename': 'logging/general.log',
+        },
+        'for_errors': {
+            'level': 'ERROR',
+            'filters': ['require_debug_true'],
+            'class': 'logging.FileHandler',
+            'formatter': 'form_errors',
+            'filename': 'logging/errors.log',
+        },
+        'for_security': {
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.FileHandler',
+            'formatter': 'form_security',
+            'filename': 'logging/security.log',
+        },
+    },
+
+#обозначаем флаги при которых будет вызываться и отображаться та, или иная информация
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'for_general'],
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['mail_admins', 'for_errors'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.server': {
+            'handlers': ['mail_admins', 'for_errors'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.template': {
+            'handlers': ['for_errors'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.db.backends': {
+            'handlers': ['for_errors'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['for_security'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+  }
+}
+
 ROOT_URLCONF = "NewsPortalFiles.urls"
 
 TEMPLATES = [
@@ -172,3 +278,10 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'cache_files'),
+    }
+}

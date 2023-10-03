@@ -4,6 +4,7 @@ from django.urls import path
 from .views import upgrade_me, CategoryListView, subscribe
 from news.views import PostsList, PostsDetail, SearchPostList, PostCreate, PostUpdate, PostDelete, ArticleCreate, \
     ArticleUpdate, ArticleDelete, LoginRequired, Logout
+from django.views.decorators.cache import cache_page
 
 urlpatterns = [
     path('', PostsList.as_view()),
